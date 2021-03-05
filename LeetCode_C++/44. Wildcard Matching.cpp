@@ -1,65 +1,73 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-class Solution {
+class Solution
+{
 public:
-    bool isMatch(string s, string p) {
+    bool isMatch(string s, string p)
+    {
         int sIndex = 0;
-    cout << "sLength : " << s.length() << "  p : " << p << endl;
-    for(int pIndex = 0 ; pIndex < p.length() ; pIndex++)
-    {
-        if(p[pIndex] == '?')
+        for (int pIndex = 0; pIndex < p.length(); pIndex++)
         {
-                if(sIndex == s.length())
-    {
-        return false;
-    }
-            sIndex++;
-            continue;
-        }
-        else if(p[pIndex] == '*')
-        {
-            if(pIndex == p.length() -1)
+            if (p[pIndex] == '?')
             {
-                return true;
-            }
-            
-            if(p[pIndex + 1] == '*')
-            {
-                continue;
-            }
-
-            while(sIndex <= s.length())
-            {
-                if(s[sIndex] == p[pIndex + 1] || p[pIndex + 1] == '?')
+                if (sIndex == s.length())
                 {
-                    if(isMatch(s.substr(sIndex),p.substr(pIndex + 1)))
-                    {
-                        return true;
-                    }
-                    cout << "1" << endl;
+                    return false;
                 }
-                cout << "p : " << p << " 2" << endl;
+
                 sIndex++;
             }
-            return false;
-        }
-        else
-        {
-            if(sIndex == s.length() || s[sIndex] != p[pIndex])
+            else if (p[pIndex] == '*')
             {
-                cout << "false , index : " << sIndex << endl; 
+                if (pIndex == p.length() - 1)
+                {
+                    return true;
+                }
+
+                if (p[pIndex + 1] == '*')
+                {
+                    continue;
+                }
+
+                pIndex++;
+                string commonSubstr;
+                while(pIndex < p.length() && p[pIndex] != '?' && p[pIndex] != '*' )
+                {
+                    commonSubstr += p[pIndex];
+                    pIndex++;
+                }
+
+                while (sIndex <= s.length())
+                {
+                    size_t commonSubstrIndex = s.substr(sIndex).find(commonSubstr);
+                    if(commonSubstrIndex == string::npos)
+                    {
+                        break;
+                    }
+
+                     if (isMatch(s.substr(commonSubstrIndex), p.substr(pIndex + 1)))
+                        {
+                            return true;
+                        }
+                    sIndex = commonSubstrIndex + 1;
+                }
                 return false;
             }
-            sIndex++;
+            else
+            {
+                if (sIndex == s.length() || s[sIndex] != p[pIndex])
+                {
+                    return false;
+                }
+                sIndex++;
+            }
         }
-    } 
 
-    if(sIndex == s.length())
-    {
-        return true;
-    }
-    return false;
-
+        if (sIndex == s.length())
+        {
+            return true;
+        }
+        return false;
     }
 };
